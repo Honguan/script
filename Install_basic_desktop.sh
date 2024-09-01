@@ -2,8 +2,8 @@
 
 # Function to prompt for user input
 prompt() {
-    read -p "$1 [預設: $2]: " input
-    echo "${input:-$2}"
+    read -p "$1: " input
+    echo "$input"
 }
 
 # Update the system
@@ -20,39 +20,32 @@ sudo apt install -y xrdp
 echo "安裝 Xubuntu 桌面環境..."
 sudo tasksel install xubuntu-desktop
 
-# Prompt for optional software installations with default values
-echo "選擇要安裝的軟體（預設值為不安裝）:"
-echo "1. OBS Studio"
-echo "2. qBittorrent-enhanced"
-echo "3. Google Chrome"
-echo "4. Docker"
-echo "5. Notepad++"
-echo "6. Steam"
-echo "7. OpenVPN"
-echo "8. Anaconda"
-
-# Use a prompt for installation choices
-choices=$(prompt "請輸入要安裝的軟體代號（多個代號用空格分隔）" "")
+# Prompt for optional software installations
+install_obs=$(prompt "是否要安裝 OBS Studio？ (y/n)" "y")
+install_qbittorrent=$(prompt "是否要安裝 qBittorrent-enhanced？ (y/n)" "y")
+install_chrome=$(prompt "是否要安裝 Google Chrome？ (y/n)" "y")
+install_docker=$(prompt "是否要安裝 Docker？ (y/n)" "y")
+install_notepad=$(prompt "是否要安裝 Notepad++？ (y/n)" "y")
+install_steam=$(prompt "是否要安裝 Steam？ (y/n)" "y")
+install_openvpn=$(prompt "是否要安裝 OpenVPN？ (y/n)" "n")
+install_anaconda=$(prompt "是否要安裝 Anaconda？ (y/n)" "n")
 
 # Install OBS Studio
-if [[ "$choices" == *"1"* ]]; then
-    echo "安裝 OBS Studio..."
+if [ "$install_obs" = "y" ]; then
     sudo add-apt-repository -y ppa:obsproject/obs-studio
     sudo apt update
     sudo apt install -y obs-studio
 fi
 
 # Install qBittorrent-enhanced
-if [[ "$choices" == *"2"* ]]; then
-    echo "安裝 qBittorrent-enhanced..."
+if [ "$install_qbittorrent" = "y" ]; then
     sudo add-apt-repository -y ppa:poplite/qbittorrent-enhanced
     sudo apt-get update
     sudo apt-get install -y qbittorrent-enhanced qbittorrent-enhanced-nox
 fi
 
 # Install Google Chrome
-if [[ "$choices" == *"3"* ]]; then
-    echo "安裝 Google Chrome..."
+if [ "$install_chrome" = "y" ]; then
     wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
     sudo dpkg -i google-chrome-stable_current_amd64.deb
     sudo apt --fix-broken install -y
@@ -61,34 +54,29 @@ if [[ "$choices" == *"3"* ]]; then
 fi
 
 # Install Docker
-if [[ "$choices" == *"4"* ]]; then
-    echo "安裝 Docker..."
+if [ "$install_docker" = "y" ]; then
     sudo snap install docker
 fi
 
 # Install Notepad++
-if [[ "$choices" == *"5"* ]]; then
-    echo "安裝 Notepad++..."
+if [ "$install_notepad" = "y" ]; then
     sudo snap install notepad-plus-plus
 fi
 
 # Install Steam
-if [[ "$choices" == *"6"* ]]; then
-    echo "安裝 Steam..."
+if [ "$install_steam" = "y" ]; then
     sudo apt install -y steam
 fi
 
 # Install OpenVPN
-if [[ "$choices" == *"7"* ]]; then
-    echo "安裝 OpenVPN..."
+if [ "$install_openvpn" = "y" ]; then
     curl -O https://raw.githubusercontent.com/angristan/openvpn-install/master/openvpn-install.sh
     chmod +x openvpn-install.sh
     ./openvpn-install.sh
 fi
 
 # Install Anaconda
-if [[ "$choices" == *"8"* ]]; then
-    echo "安裝 Anaconda..."
+if [ "$install_anaconda" = "y" ]; then
     wget https://repo.anaconda.com/archive/Anaconda3-2023.09-0-Linux-x86_64.sh
     bash Anaconda3-*-Linux-x86_64.sh -b -p $HOME/anaconda3
     echo 'export PATH=$HOME/anaconda3/bin:$PATH' >> ~/.bashrc
@@ -98,8 +86,8 @@ if [[ "$choices" == *"8"* ]]; then
 fi
 
 # Prompt for user configuration without default values
-username=$(prompt "請輸入要建立的使用者名稱" "")
-password=$(prompt "請輸入使用者的密碼" "")
+username=$(prompt "請輸入要建立的使用者名稱")
+password=$(prompt "請輸入使用者的密碼")
 
 # Create user and set password
 sudo adduser "$username" --gecos ""
