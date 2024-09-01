@@ -20,12 +20,19 @@
 
 ## 使用方法
 
-1. 使用腳本：
+1. 純淨桌面版腳本：
 
 ```bash
 
 wget -qO- https://raw.githubusercontent.com/Honguan/script/main/Install_desktop.sh | sudo bash
 
+```
+
+2. 預設安裝腳本：
+
+```bash
+
+wget -qO- https://raw.githubusercontent.com/Honguan/script/main/Install_basic_desktop.sh | sudo bash 
 ```
 
 ## 注意事項
