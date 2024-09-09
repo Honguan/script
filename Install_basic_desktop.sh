@@ -6,6 +6,31 @@ prompt() {
     echo "$input"
 }
 
+# Prompt for optional software installations
+install_obs=$(prompt "是否要安裝 OBS Studio？ (y/n)" "y")
+install_qbittorrent=$(prompt "是否要安裝 qBittorrent-enhanced？ (y/n)" "y")
+install_chrome=$(prompt "是否要安裝 Google Chrome？ (y/n)" "y")
+install_docker=$(prompt "是否要安裝 Docker？ (y/n)" "y")
+install_notepad=$(prompt "是否要安裝 Notepad++？ (y/n)" "y")
+install_steam=$(prompt "是否要安裝 Steam？ (y/n)" "y")
+install_openvpn=$(prompt "是否要安裝 OpenVPN？ (y/n)" "n")
+install_anaconda=$(prompt "是否要安裝 Anaconda？ (y/n)" "n")
+
+# Prompt for user configuration without default values
+username=$(prompt "請輸入要建立的使用者名稱")
+password=$(prompt "請輸入使用者的密碼")
+
+# Prompt for swap creation
+create_swap=$(prompt "是否要建立 swap 檔案？ (y/n)" "n")
+if [ "$create_swap" = "y" ]; then
+    swap_size=$(prompt "請輸入 swap 檔案大小（例如：16G 表示 16GB）")
+    sudo fallocate -l "$swap_size" /swapfile
+    sudo chmod 600 /swapfile
+    sudo mkswap /swapfile
+    sudo swapon /swapfile
+    echo "/swapfile none swap sw 0 0" | sudo tee -a /etc/fstab
+fi
+
 # Update the system
 echo "正在更新系統..."
 sudo apt update && sudo apt upgrade -y
@@ -19,16 +44,6 @@ sudo apt install -y xrdp
 
 echo "安裝 Xubuntu 桌面環境..."
 sudo tasksel install xubuntu-desktop
-
-# Prompt for optional software installations
-install_obs=$(prompt "是否要安裝 OBS Studio？ (y/n)" "y")
-install_qbittorrent=$(prompt "是否要安裝 qBittorrent-enhanced？ (y/n)" "y")
-install_chrome=$(prompt "是否要安裝 Google Chrome？ (y/n)" "y")
-install_docker=$(prompt "是否要安裝 Docker？ (y/n)" "y")
-install_notepad=$(prompt "是否要安裝 Notepad++？ (y/n)" "y")
-install_steam=$(prompt "是否要安裝 Steam？ (y/n)" "y")
-install_openvpn=$(prompt "是否要安裝 OpenVPN？ (y/n)" "n")
-install_anaconda=$(prompt "是否要安裝 Anaconda？ (y/n)" "n")
 
 # Install OBS Studio
 if [ "$install_obs" = "y" ]; then
@@ -85,9 +100,6 @@ if [ "$install_anaconda" = "y" ]; then
     conda config --set auto_activate_base true
 fi
 
-# Prompt for user configuration without default values
-username=$(prompt "請輸入要建立的使用者名稱")
-password=$(prompt "請輸入使用者的密碼")
 
 # Create user and set password
 sudo adduser "$username" --gecos ""
@@ -105,16 +117,5 @@ sudo systemctl restart xrdp
 # 檢查 xrdp 服務狀態
 echo "檢查 xrdp 服務狀態..."
 sudo systemctl status xrdp
-
-# Prompt for swap creation
-create_swap=$(prompt "是否要建立 swap 檔案？ (y/n)" "n")
-if [ "$create_swap" = "y" ]; then
-    swap_size=$(prompt "請輸入 swap 檔案大小（例如：16G 表示 16GB）")
-    sudo fallocate -l "$swap_size" /swapfile
-    sudo chmod 600 /swapfile
-    sudo mkswap /swapfile
-    sudo swapon /swapfile
-    echo "/swapfile none swap sw 0 0" | sudo tee -a /etc/fstab
-fi
 
 echo "安裝和配置完成！"

@@ -6,20 +6,6 @@ prompt() {
     echo "${input:-$2}"
 }
 
-# Update the system
-echo "正在更新系統..."
-sudo apt update && sudo apt upgrade -y
-
-# 必定安裝 SLiM、xrdp 和 Xubuntu 桌面環境
-echo "安裝 SLiM 顯示管理器..."
-sudo apt install -y slim
-
-echo "安裝 xrdp 以啟用遠端桌面..."
-sudo apt install -y xrdp
-
-echo "安裝 Xubuntu 桌面環境..."
-sudo tasksel install xubuntu-desktop
-
 # Prompt for optional software installations with default values
 echo "選擇要安裝的軟體（預設值為不安裝）:"
 echo "1. OBS Studio"
@@ -33,6 +19,36 @@ echo "8. Anaconda"
 
 # Use a prompt for installation choices
 choices=$(prompt "請輸入要安裝的軟體代號（多個代號用空格分隔）" "")
+
+# Prompt for user configuration without default values
+username=$(prompt "請輸入要建立的使用者名稱" "")
+password=$(prompt "請輸入使用者的密碼" "")
+
+# Prompt for swap creation
+create_swap=$(prompt "是否要建立 swap 檔案？ (y/n)" "n")
+if [ "$create_swap" = "y" ]; then
+    swap_size=$(prompt "請輸入 swap 檔案大小（例如：16G 表示 16GB）")
+    sudo fallocate -l "$swap_size" /swapfile
+    sudo chmod 600 /swapfile
+    sudo mkswap /swapfile
+    sudo swapon /swapfile
+    echo "/swapfile none swap sw 0 0" | sudo tee -a /etc/fstab
+fi
+
+
+# Update the system
+echo "正在更新系統..."
+sudo apt update && sudo apt upgrade -y
+
+# 必定安裝 SLiM、xrdp 和 Xubuntu 桌面環境
+echo "安裝 SLiM 顯示管理器..."
+sudo apt install -y slim
+
+echo "安裝 xrdp 以啟用遠端桌面..."
+sudo apt install -y xrdp
+
+echo "安裝 Xubuntu 桌面環境..."
+sudo tasksel install xubuntu-desktop
 
 # Install OBS Studio
 if [[ "$choices" == *"1"* ]]; then
@@ -97,10 +113,6 @@ if [[ "$choices" == *"8"* ]]; then
     conda config --set auto_activate_base true
 fi
 
-# Prompt for user configuration without default values
-username=$(prompt "請輸入要建立的使用者名稱" "")
-password=$(prompt "請輸入使用者的密碼" "")
-
 # Create user and set password
 sudo adduser "$username" --gecos ""
 echo "$username:$password" | sudo chpasswd
@@ -117,16 +129,5 @@ sudo systemctl restart xrdp
 # 檢查 xrdp 服務狀態
 echo "檢查 xrdp 服務狀態..."
 sudo systemctl status xrdp
-
-# Prompt for swap creation
-create_swap=$(prompt "是否要建立 swap 檔案？ (y/n)" "n")
-if [ "$create_swap" = "y" ]; then
-    swap_size=$(prompt "請輸入 swap 檔案大小（例如：16G 表示 16GB）")
-    sudo fallocate -l "$swap_size" /swapfile
-    sudo chmod 600 /swapfile
-    sudo mkswap /swapfile
-    sudo swapon /swapfile
-    echo "/swapfile none swap sw 0 0" | sudo tee -a /etc/fstab
-fi
 
 echo "安裝和配置完成！"
