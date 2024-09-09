@@ -10,9 +10,9 @@ prompt() {
 install_obs=$(prompt "是否要安裝 OBS Studio？ (y/n)" "y")
 install_qbittorrent=$(prompt "是否要安裝 qBittorrent-enhanced？ (y/n)" "y")
 install_chrome=$(prompt "是否要安裝 Google Chrome？ (y/n)" "y")
-install_docker=$(prompt "是否要安裝 Docker？ (y/n)" "y")
-install_notepad=$(prompt "是否要安裝 Notepad++？ (y/n)" "y")
-install_steam=$(prompt "是否要安裝 Steam？ (y/n)" "y")
+install_docker=$(prompt "是否要安裝 Docker？ (y/n)" "n")
+install_notepad=$(prompt "是否要安裝 Notepad++？ (y/n)" "n")
+install_steam=$(prompt "是否要安裝 Steam？ (y/n)" "n")
 install_openvpn=$(prompt "是否要安裝 OpenVPN？ (y/n)" "n")
 install_anaconda=$(prompt "是否要安裝 Anaconda？ (y/n)" "n")
 
